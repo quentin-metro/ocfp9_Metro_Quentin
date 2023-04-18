@@ -5,10 +5,20 @@
     <title>LITReview</title>
 </head>
 <body>
-    <h1>LITReview</h1>
+    <header>
+        <p>
+            {% if user.is_authenticated %}
+                <p>Vous êtes connecté en tant que {{ request.user }}. </p>
+                <h1>LITReview</h1>
+                <a href="{% url 'flux' %}">Flux</a>
+                <a href="{% url 'abonnements' %}">Abonnements</a>
+                <a href="{% url 'logout' %}">Se déconnecter</a>
+            {% else %}
+                <h1>LITReview</h1>
+            {% endif %}
+
+        </p>
+    </header>
     {% block content %}{% endblock content %}
-    {% if user.is_authenticated %}
-        <p>Vous êtes connecté en tant que {{ request.user }}. <a href="{% url 'logout' %}">Se déconnecter</a></p>
-    {% endif %}
 </body>
 </html>

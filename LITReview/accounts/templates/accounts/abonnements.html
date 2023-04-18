@@ -1,0 +1,34 @@
+{% extends 'accounts/index.html' %}
+{% block content %}
+    <p>Suivre d'autres utilisateurs</p>
+    <form method="post">
+        {{ follow }}
+        {{ form.followname.error_messages }}
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit" >Envoyer</button>
+    </form>
+    <p>Abonnements</p>
+        <ul>
+            {{ followed.as_p }}
+            {% csrf_token %}
+            {% for follow in followed %}
+                <li>{{ follow.followed_user }}
+                    <button type="button" >
+                        <a href="{% url 'unfollow' follow_id=follow.id %}">Désabonner</a>
+                    </button></li>
+
+            {% endfor %}
+        </ul>
+
+    <p>Abonnés</p>
+        <ul>
+            {{ follower.as_p }}
+            {% csrf_token %}
+            {% for follow in follower %}
+                <li>{{ follow.user}}</li>
+            {% endfor %}
+        </ul>
+
+
+{% endblock content %}

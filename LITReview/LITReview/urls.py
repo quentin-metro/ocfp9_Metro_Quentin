@@ -26,5 +26,10 @@ urlpatterns = [
             redirect_authenticated_user=True),
          name='login'),
     path('logout/', views.logout_user, name='logout'),
-    path('accueil/', views.home, name='accueil')
+    path('signup/', views.signup_page, name='signup'),
+    path('flux/', views.flux, name='flux'),
+    # path('critique/', views.critique, name='critique'),
+    # path('posts/', views.posts, name='posts'),
+    path('abonnements/', views.abonnements, name='abonnements'),
+    path('abonnements/<int:follow_id>', views.unfollow, name='unfollow')
 ]

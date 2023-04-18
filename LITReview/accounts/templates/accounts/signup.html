@@ -1,0 +1,12 @@
+{% extends 'accounts/index.html' %}
+{% block content %}
+    <h2>Inscription</h2>
+    <form method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit" >S’inscrire</button>
+    </form>
+    <button type= button>
+        <a href="{% url 'login' %}">Retourner</a>
+    </button>
+{% endblock content %}
