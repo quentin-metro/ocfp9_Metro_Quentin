@@ -1,0 +1,35 @@
+{% extends 'accounts/index.html' %}
+{% block content %}
+    <h2>Vos Posts</h2>
+        {{ posts.as_p }}
+        {% csrf_token %}
+        {% for post in posts %}
+            <div>
+                {% if post.type == "review" %}
+                    <p>Vous avez publié une critique        {{ post.time_created }}</p>
+                    <p>{{ post.rating }}  -  {{ ticket.headline }}</p>
+                    <p>{{ post.body }}</p>
+                    {% if post.ticket %}
+                        <p>{{ post.ticket }}</p>
+                    {% endif %}
+                {% else %}
+                    <p>Vous avez publié un ticket  {{ post.time_created }}</p>
+                    <p>{{ post.title }}</p>
+                    <p>{{ post.description }}</p>
+                    {% if post.image %}
+                        <img src={{post.image.url}}>
+                    {% endif %}
+                {% endif %}
+                <p>
+                    <button type="button" >
+                        <a href="{% url 'alter_post' post_type=post.type post_id=post.id %}">Modifier</a>
+                    </button>
+                    <button type="button" >
+                        <a href="{% url 'delete_post' post_type=post.type post_id=post.id %}">Supprimer</a>
+                    </button>
+                </p>
+            </div>
+        {% endfor %}
+
+
+{% endblock content %}

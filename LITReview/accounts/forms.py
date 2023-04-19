@@ -1,4 +1,4 @@
-from .models import UserFollows
+from .models import UserFollows, Ticket
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -53,3 +53,31 @@ class FollowForm(forms.Form):
             user_follow = UserFollows(user=user, followed_user=followed_user[0])
             user_follow.save()
             return user_follow
+
+
+class TicketForm(forms.Form):
+    title = forms.CharField(label='Titre', min_length=1, max_length=128)
+    description = forms.CharField(label='Description', widget=forms.Textarea, required=False)
+    image = forms.ImageField(label='Image', required=False)
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        return title
+
+    def clean_description(self):
+        description = self.cleaned_data['description']
+        return description
+
+    def clean_image(self):
+        image = self.cleaned_data['image']
+        return image
+
+    def save(self, username):
+        user = User.objects.filter(username=username)[0]
+        ticket = Ticket(title=self.cleaned_data['title'],
+                        description=self.cleaned_data['description'],
+                        user=user,
+                        image=self.cleaned_data['image']
+                        )
+        ticket.save()
+        return ticket
