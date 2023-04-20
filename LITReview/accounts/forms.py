@@ -72,12 +72,32 @@ class TicketForm(forms.Form):
         image = self.cleaned_data['image']
         return image
 
-    def save(self, username):
+    def save(self, username, commit=True):
         user = User.objects.filter(username=username)[0]
         ticket = Ticket(title=self.cleaned_data['title'],
                         description=self.cleaned_data['description'],
                         user=user,
                         image=self.cleaned_data['image']
+                        )
+        ticket.save(commit)
+        return ticket
+
+    def edit(self, ticket):
+        image = self.cleaned_data['image']
+        if image is None:
+            image = ticket.image
+        elif image is False:
+            Ticket.objects.filter(image=ticket.image)[0].image.delete()
+            image = None
+        else:
+            Ticket.objects.filter(image=ticket.image)[0].image.delete()
+
+        ticket = Ticket(id=ticket.id,
+                        title=self.cleaned_data['title'],
+                        description=self.cleaned_data['description'],
+                        user=ticket.user,
+                        image=image,
+                        time_created=ticket.time_created
                         )
         ticket.save()
         return ticket

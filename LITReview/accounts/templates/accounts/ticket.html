@@ -3,6 +3,9 @@
     <form method="post" enctype="multipart/form-data">
         {{ form.as_p }}
         {% csrf_token %}
+        {% if form.image %}
+            <img src="{{ MEDIA_URL }}{{form.image.url}}">
+        {% endif %}
         <button type="submit" >Envoyer</button>
     </form>
 

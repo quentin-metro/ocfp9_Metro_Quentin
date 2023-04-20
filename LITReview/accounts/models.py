@@ -26,8 +26,7 @@ class UserFollows(models.Model):
 class Review(models.Model):
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
     # validates that rating must be between 0 and 5
-    rating = models.PositiveSmallIntegerField(max_length=1024,
-                                              validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     headline = models.fields.CharField(max_length=128)
     body = models.fields.TextField(max_length=8192, blank=True)

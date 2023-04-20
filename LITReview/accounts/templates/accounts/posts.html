@@ -22,10 +22,10 @@
                 {% endif %}
                 <p>
                     <button type="button" >
-                        <a href="{% url 'alter_post' post_type=post.type post_id=post.id %}">Modifier</a>
+                        <a href="{% url 'post_edit' post_type=post.type post_id=post.id %}">Modifier</a>
                     </button>
                     <button type="button" >
-                        <a href="{% url 'delete_post' post_type=post.type post_id=post.id %}">Supprimer</a>
+                        <a href="{% url 'post_delete' post_type=post.type post_id=post.id %}">Supprimer</a>
                     </button>
                 </p>
             </div>

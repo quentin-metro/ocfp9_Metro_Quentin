@@ -37,6 +37,20 @@ def ticket_create(request):
         if form.is_valid():
             user = request.user.username
             form.save(user)
+            return redirect('posts')
+    return render(request, 'accounts/ticket.html', context={'form': form})
+
+
+@login_required
+def ticket_edit(request, ticket_id):
+    ticket = Ticket.objects.get(id=ticket_id)
+    data = {'title': ticket.title, 'description': ticket.description, 'image': ticket.image}
+    form = forms.TicketForm(initial=data)
+    if request.method == 'POST':
+        form = forms.TicketForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.edit(ticket)
+            return redirect('posts')
     return render(request, 'accounts/ticket.html', context={'form': form})
 
 
@@ -54,12 +68,15 @@ def posts(request):
 
 
 @login_required
-def alter_post(request, post_type, post_id):
-    return redirect('posts')
+def post_edit(request, post_type, post_id):
+    if post_type == "review":
+        Review.objects.filter(id=post_id).delete()
+    else:
+        return redirect('ticket_edit', ticket_id=post_id)
 
 
 @login_required
-def delete_post(request, post_type, post_id):
+def post_delete(request, post_type, post_id):
     if post_type == "review":
         Review.objects.filter(id=post_id).delete()
     else:
