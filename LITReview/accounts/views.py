@@ -3,6 +3,7 @@ from .models import UserFollows, Ticket, Review
 from django.conf import settings
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from itertools import chain
 
@@ -153,16 +154,16 @@ def post_delete(request, post_type, post_id):
 @login_required
 def abonnements(request):
     # Affichage Follows
-    user = request.user.username
-    followed = UserFollows.objects.filter(user=request.user)
-    follower = UserFollows.objects.filter(followed_user=request.user)
+    user = User.objects.get(username=request.user.username)
+    followed = UserFollows.objects.filter(user=user)
+    follower = UserFollows.objects.filter(followed_user=user)
     # Handling form
     form = forms.FollowForm()
     if request.method == 'POST':
         form = forms.FollowForm(request.POST)
         if form.is_valid():
+            form.exist_already(user)
             form.save(user)
-            # raise relation already exist error
     context = {'form': form,
                'followed': followed,
                'follower': follower

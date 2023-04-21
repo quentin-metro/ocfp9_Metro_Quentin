@@ -34,7 +34,6 @@ class SignupForm(forms.Form):
 
 class FollowForm(forms.Form):
     followname = forms.CharField(label='Nom d\'utilisateur', min_length=4, max_length=150)
-    errors_message = None
 
     def clean_followname(self):
         followname = self.cleaned_data['followname'].lower()
@@ -43,9 +42,17 @@ class FollowForm(forms.Form):
             raise ValidationError("Nom d\'utilisateur n'existe pas")
         return followname
 
-    def save(self, username):
-        user = User.objects.get(username=username)
-        followname = self.cleaned_data['followname']
+    def exist_already(self, user):
+        followname = self.cleaned_data.get('followname')
+        to_follow = User.objects.get(username=followname)
+        exist = UserFollows.objects.get(user=user, followed_user=to_follow)
+        if exist:
+            self.add_error("followname", f"Vous suivez déjà {followname}")
+            return True
+        return False
+
+    def save(self, user):
+        followname = self.cleaned_data.get('followname')
         followed_user = User.objects.filter(username=followname)
         if followed_user:
             if UserFollows.objects.filter(user=user, followed_user=followed_user[0]):

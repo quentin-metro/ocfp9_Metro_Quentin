@@ -15,12 +15,16 @@
     {% for post in flux %}
         <div>
         {% if post.type == "review" %}
-            <p>{{ post.user }} avez publié une critique      {{ post.time_created }}</p>
+            {% if post.ticket.user == user.get_username %}
+            <p> Vous avez publié une critique  {{ post.time_created }}</p>
+            {% else %}
+                <p>{{ post.user }} a publié une critique  {{ post.time_created }}</p>
+            {% endif %}
             <p>{{ post.rating }}  -  {{ post.headline }}</p>
             <p>{{ post.body }}</p>
             {% if post.ticket %}
                 <div>
-                    {% if post.ticket.user == user.get_username %}
+                    {% if post.ticket.user.username == user.get_username %}
                         <p> Vous avez publié un ticket  {{ post.ticket.time_created }}</p>
                     {% else %}
                         <p>{{ post.ticket.user }} a publié un ticket  {{ post.ticket.time_created }}</p>
@@ -40,8 +44,8 @@
                 </div>
             {% endif %}
         {% else %}
-            {% if post.ticket.user == user.get_username %}
-                <p> Vous avez publié un ticket  {{ post.ticket.time_created }}</p>
+            {% if post.user.username == user.get_username %}
+                <p> Vous avez publié un ticket  {{ post.time_created }}</p>
             {% else %}
                 <p>{{ post.user }}  a demandé un ticket  {{ post.time_created }}</p>
             {% endif %}
