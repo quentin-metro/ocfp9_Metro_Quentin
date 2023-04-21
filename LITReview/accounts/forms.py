@@ -1,4 +1,4 @@
-from .models import UserFollows, Ticket
+from .models import UserFollows, Ticket, Review
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -44,7 +44,7 @@ class FollowForm(forms.Form):
         return followname
 
     def save(self, username):
-        user = User.objects.filter(username=username)[0]
+        user = User.objects.get(username=username)
         followname = self.cleaned_data['followname']
         followed_user = User.objects.filter(username=followname)
         if followed_user:
@@ -73,7 +73,7 @@ class TicketForm(forms.Form):
         return image
 
     def save(self, username, commit=True):
-        user = User.objects.filter(username=username)[0]
+        user = User.objects.get(username=username)
         ticket = Ticket(title=self.cleaned_data['title'],
                         description=self.cleaned_data['description'],
                         user=user,
@@ -101,3 +101,104 @@ class TicketForm(forms.Form):
                         )
         ticket.save()
         return ticket
+
+
+class ReviewForm(forms.Form):
+    ticket = None
+    # Review Fields
+    headline = forms.CharField(label='En-Tête', min_length=1, max_length=128)
+    CHOICES = [(0, "0"), (1, "1"), (2, "2"), (3, "3"), (4, "4"), (5, "5")]
+    rating = forms.ChoiceField(label="Note",
+                               required=True,
+                               widget=forms.RadioSelect,
+                               choices=CHOICES
+                               )
+    body = forms.CharField(label='Commentaire', max_length=8192, widget=forms.Textarea, required=False)
+
+    def clean_headline(self):
+        headline = self.cleaned_data['headline']
+        return headline
+
+    def clean_rating(self):
+        rating = self.cleaned_data['rating']
+        return rating
+
+    def clean_body(self):
+        body = self.cleaned_data['body']
+        return body
+
+    def set_ticket(self, ticket):
+        self.ticket = ticket
+
+    def save(self, username, commit=True):
+        user = User.objects.get(username=username)
+        # Make a review
+        review = Review(ticket=self.ticket,
+                        rating=self.cleaned_data['rating'],
+                        user=user,
+                        headline=self.cleaned_data['headline'],
+                        body=self.cleaned_data['body']
+                        )
+        review.save(commit)
+        return review
+
+    def edit(self, review):
+        review = Review(id=review.id,
+                        ticket=review.ticket,
+                        rating=self.cleaned_data['rating'],
+                        user=review.user,
+                        headline=self.cleaned_data['headline'],
+                        body=self.cleaned_data['body'],
+                        time_created=review.time_created
+                        )
+        review.save()
+        return review
+
+
+class ReviewTicketForm(ReviewForm):
+    # Ticket Fields
+    ticket_title = forms.CharField(label='Titre', min_length=1, max_length=128)
+    ticket_description = forms.CharField(label='Description', widget=forms.Textarea, required=False)
+    ticket_image = forms.ImageField(label='Image', required=False)
+    # Review Fields
+    '''
+        headline = forms.CharField(label='En-Tête', min_length=1, max_length=128)
+        CHOICES = [(0, "0"), (1, "1"), (2, "2"), (3, "3"), (4, "4"), (5, "5")]
+        rating = forms.ChoiceField(label="Note",
+                                   required=True,
+                                   widget=forms.RadioSelect,
+                                   choices=CHOICES
+                                   )
+        body = forms.CharField(label='Commentaire', max_length=8192, widget=forms.Textarea, required=False)
+    '''
+
+    def clean_ticket_title(self):
+        ticket_title = self.cleaned_data['ticket_title']
+        return ticket_title
+
+    def clean_ticket_description(self):
+        ticket_description = self.cleaned_data['ticket_description']
+        return ticket_description
+
+    def clean_ticket_image(self):
+        ticket_image = self.cleaned_data['ticket_image']
+        return ticket_image
+
+    def save(self, username, commit=True):
+        user = User.objects.get(username=username)
+        # Make a Ticket
+        ticket = Ticket(title=self.cleaned_data['ticket_title'],
+                        description=self.cleaned_data['ticket_description'],
+                        user=user,
+                        image=self.cleaned_data['ticket_image']
+                        )
+        ticket.save(commit)
+        # Make a review
+        review = Review(ticket=ticket,
+                        rating=self.cleaned_data['rating'],
+                        user=user,
+                        headline=self.cleaned_data['headline'],
+                        body=self.cleaned_data['body']
+                        )
+        review.save(commit)
+        return review

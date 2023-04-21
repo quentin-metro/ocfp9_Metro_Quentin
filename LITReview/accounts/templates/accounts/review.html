@@ -1,0 +1,27 @@
+{% extends 'accounts/index.html' %}
+{% block content %}
+    {{ ticket.as_p }}
+    {% csrf_token %}
+    <div>
+        {% if ticket %}
+            <p> Vous êtes en train de poster en réponse à</p>
+            <div>
+                {% if ticket.user == user.get_username %}
+                    <p> Vous avez publié un ticket  {{ ticket.time_created }}</p>
+                {% else %}
+                    <p>{{ ticket.user }}  a demandé un ticket  {{ ticket.time_created }}</p>
+                {% endif %}
+                <p>{{ ticket.title }}</p>
+                <p>{{ ticket.description }}</p>
+                {% if ticket.image %}
+                    <img src={{ticket.image.url}}>
+                {% endif %}
+            </div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit" >Envoyer</button>
+        </form>
+    </div>
+{% endblock content %}

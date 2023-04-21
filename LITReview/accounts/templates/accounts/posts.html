@@ -7,10 +7,19 @@
             <div>
                 {% if post.type == "review" %}
                     <p>Vous avez publié une critique        {{ post.time_created }}</p>
-                    <p>{{ post.rating }}  -  {{ ticket.headline }}</p>
+                    <p>{{ post.rating }}  -  {{ post.headline }}</p>
                     <p>{{ post.body }}</p>
                     {% if post.ticket %}
-                        <p>{{ post.ticket }}</p>
+                        {% if post.ticket.user == user.get_username %}
+                            <p> Vous avez publié un ticket  {{ post.ticket.time_created }}</p>
+                        {% else %}
+                            <p>{{ post.ticket.user }} a publié un ticket  {{ post.ticket.time_created }}</p>
+                        {% endif %}
+                        <p>{{ post.ticket.title }}</p>
+                        <p>{{ post.ticket.description }}</p>
+                        {% if post.ticket.image %}
+                            <img src={{post.ticket.image.url}}>
+                        {% endif %}
                     {% endif %}
                 {% else %}
                     <p>Vous avez publié un ticket  {{ post.time_created }}</p>
