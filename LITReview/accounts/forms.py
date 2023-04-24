@@ -5,9 +5,15 @@ from django.core.exceptions import ValidationError
 
 
 class SignupForm(forms.Form):
-    username = forms.CharField(label='Nom d\'utilisateur', min_length=4, max_length=150)
-    password1 = forms.CharField(label='Mot de passe', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Confirmer mot de passe', widget=forms.PasswordInput)
+    username = forms.CharField(label='Nom d\'utilisateur',
+                               widget=forms.TextInput(attrs={'placeholder': 'Nom d\'utilisateur'}),
+                               min_length=4,
+                               max_length=150
+                               )
+    password1 = forms.CharField(label='Mot de passe', widget=forms.PasswordInput(attrs={'placeholder': 'Mot de passe'}))
+    password2 = forms.CharField(label='Confirmer mot de passe',
+                                widget=forms.PasswordInput(attrs={'placeholder': 'Confirmer Mot de passe'})
+                                )
 
     def clean_username(self):
         username = self.cleaned_data['username'].lower()

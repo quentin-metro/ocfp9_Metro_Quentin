@@ -1,25 +1,28 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>LITReview</title>
+    <link rel="stylesheet" href="../../static/accounts/css/style.css">
 </head>
 <body>
     <header>
-        <p>
+        <div id="header">
             {% if user.is_authenticated %}
-                <p>Vous êtes connecté en tant que {{ request.user }}. </p>
-                <h1>LITReview</h1>
-                <a href="{% url 'flux' %}">Flux</a>
-                <a href="{% url 'posts' %}">Posts</a>
-                <a href="{% url 'abonnements' %}">Abonnements</a>
-                <a href="{% url 'logout' %}">Se déconnecter</a>
+                <p id="user-connected">Vous êtes connecté en tant que {{ request.user }}. </p>
+                <h1 id="site-name">LITReview</h1>
+                <div id="redirect">
+                    <a href="{% url 'flux' %}">Flux</a>
+                    <a href="{% url 'posts' %}">Posts</a>
+                    <a href="{% url 'follows' %}">Abonnements</a>
+                    <a href="{% url 'logout' %}">Se déconnecter</a>
+                </div>
             {% else %}
                 <h1>LITReview</h1>
             {% endif %}
 
-        </p>
+        </div>
     </header>
     {% block content %}{% endblock content %}
 </body>

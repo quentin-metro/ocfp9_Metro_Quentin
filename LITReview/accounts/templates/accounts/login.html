@@ -1,12 +1,16 @@
 {% extends 'accounts/index.html' %}
 {% block content %}
-    <p>{{ message }}</p>
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <button type="submit" >Se connecter</button>
-    </form>
-    <p>Inscrivez-vous maintenant
-        <button type= button><a href="{% url 'signup' %}">S'inscrire</a></button>
-    </p>
+    <div id="login-page-container">
+        <div id="signup-container">
+            <p>Inscrivez-vous maintenant</p>
+            <button type= button><a href="{% url 'signup' %}">S'inscrire</a></button>
+        </div>
+        <div id="login-container">
+            <form method="post">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <button type="submit" >Se connecter</button>
+            </form>
+        </div>
+    </div>
 {% endblock content %}

@@ -99,8 +99,8 @@ def review_edit(request, review_id):
 def flux(request):
     # Get follow_user posts
     list_follows = []
-    follows = UserFollows.objects.filter(user=request.user)
-    for follow in follows:
+    followeds = UserFollows.objects.filter(user=request.user)
+    for follow in followeds:
         list_follows.append(follow.followed_user.id)
     follow_tickets = Ticket.objects.filter(user__in=list_follows)
     follow_reviews = Review.objects.filter(user__in=list_follows)
@@ -152,7 +152,7 @@ def post_delete(request, post_type, post_id):
 
 
 @login_required
-def abonnements(request):
+def follows(request):
     # Affichage Follows
     user = User.objects.get(username=request.user.username)
     followed = UserFollows.objects.filter(user=user)
@@ -168,11 +168,11 @@ def abonnements(request):
                'followed': followed,
                'follower': follower
                }
-    return render(request, 'accounts/abonnements.html', context=context)
+    return render(request, 'accounts/follows.html', context=context)
 
 
 @login_required
 def unfollow(request, follow_id):
     user_follow = UserFollows.objects.get(id=follow_id)
     user_follow.delete()
-    return abonnements(request)
+    return follows(request)
