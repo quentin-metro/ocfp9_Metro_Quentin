@@ -1,13 +1,25 @@
 {% extends 'accounts/index.html' %}
 {% block content %}
-    <form method="post" enctype="multipart/form-data">
-        {{ form.as_p }}
-        {% csrf_token %}
-        {% if form.image %}
-            <img src="{{ MEDIA_URL }}{{form.image.url}}">
-        {% endif %}
-        <button type="submit" >Envoyer</button>
-    </form>
+    <div id="ticket-page-container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>
+                {{ form.title.errors }}
+                <label for="{{ form.title.id_for_label }}">Titre</label>
+                {{ form.title }}
+            </p>
+            <p>
+                {{ form.description.errors }}
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+            <p>
+                {{ form.image.errors }}
+                <label for="{{ form.image.id_for_label }}">Image</label>
+                {{ form.image }}
+            </p>
+            <button type="submit" >Envoyer</button>
+        </form>
+    </div>
 
 
 {% endblock content %}

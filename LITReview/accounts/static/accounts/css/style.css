@@ -10,6 +10,7 @@ body {font-family: Verdana,sans-serif;margin:0}
     justify-content: space-between;
     color: black;
     border: 1px solid black;
+    padding-left: 1vw;
     margin-bottom: 3vw;
 }
 
@@ -61,20 +62,21 @@ body {font-family: Verdana,sans-serif;margin:0}
     justify-content: space-evenly;
 }
 
+
+#login-page-container #login-container form p{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: space-between;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    margin: 3px;
+}
+
 #login-page-container #login-container form ul{
     list-style-type: none;
     color: red;
 }
-/*
-#login-page-container #login-container form p label{
-    display: none;
-}
-
-#login-page-container #login-container form p input{
-    text-align: center;
-    width: 20vw
-}
-*/
 
 /* login Page */
 
@@ -198,4 +200,172 @@ body {font-family: Verdana,sans-serif;margin:0}
     margin: auto;
     margin-right: 1vw;
     margin-left: 1vw;
+}
+
+/* Ticket Display */
+
+.ticket {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 1px solid black;
+    margin: 10px;
+    padding: 5px;
+}
+
+.ticket button a{
+    text-decoration: none;
+}
+
+.user-date {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 2vw;
+}
+
+/* Review Display */
+
+.review {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 1px solid black;
+    margin: 10px;
+    padding: 5px;
+}
+
+.review button a{
+    text-decoration: none;
+}
+
+/* Flux Page */
+
+#flux-page-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: stretch;
+    justify-content: space-evenly;
+}
+
+#buttons_create {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#buttons_create button a{
+    text-decoration: none;
+}
+
+
+/* Ticket Page */
+
+#ticket-page-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: stretch;
+    justify-content: space-evenly;
+}
+
+#ticket-page-container form p{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: space-evenly;
+}
+
+#ticket-page-container form p:last-of-type{
+    display: block;
+}
+
+/* Review Page */
+
+
+#review-page-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: space-evenly;
+    border: 1px solid black;
+    margin: 2vw;
+}
+
+#ticket-area{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: space-evenly;
+    border-bottom: 1px solid black;
+}
+
+#ticket-area p{
+    margin-left: 1vw;
+}
+
+#review-area{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: space-evenly;
+    margin-bottom: 1vw;
+}
+
+#review-area form p{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: stretch;
+    justify-content: space-evenly;
+}
+
+#review-area form #id_rating{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: stretch;
+    justify-content: space-evenly;
+    column-gap: 1vw;
+}
+
+#review-area form #sub_ticket_area{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: space-around;
+    align-items: stretch;
+    justify-content: space-evenly;
+    border-bottom: 1px solid black;
+}
+
+#review-area form #sub_review_area{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: space-around;
+    align-items: stretch;
+    justify-content: space-evenly;
 }

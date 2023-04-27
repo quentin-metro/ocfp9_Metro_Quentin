@@ -1,69 +1,123 @@
 {% extends 'accounts/index.html' %}
 {% block content %}
-    <button type="button" >
-        <a href="{% url 'ticket'  %}">Demander une critique</a>
-    </button>
-    <button type="button" >
-        <a href="{% url 'review_ticket'  %}">Créer une critique</a>
-    </button>
+    <div id="flux-page-container">
 
+        <div id="buttons_create">
+            <button type="button" >
+                <a href="{% url 'ticket'  %}">Demander une critique</a>
+            </button>
+            <button type="button" >
+                <a href="{% url 'review_ticket'  %}">Créer une critique</a>
+            </button>
+        </div>
 
-    {{ flux.as_p }}
-    {% csrf_token %}
-    {{ reviewed.as_p }}
-    {% csrf_token %}
-    {% for post in flux %}
-        <div>
-        {% if post.type == "review" %}
-            {% if post.ticket.user == user.get_username %}
-            <p> Vous avez publié une critique  {{ post.time_created }}</p>
+        {{ flux.as_p }}
+        {% csrf_token %}
+        {{ reviewed.as_p }}
+        {% csrf_token %}
+        {% for post in flux %}
+            {% if post.type == "review" %}
+                <div class="review">
+                    <div class="user-date">
+                        {% if post.user.username == user.get_username %}
+                            <p> Vous avez publié une critique</p>
+                        {% else %}
+                            <p>{{ post.user }} a publié une critique</p>
+                        {% endif %}
+                        <p>
+                            {% load i18n %}
+                            {% language 'fr' %}
+                                {% get_current_language as LANGUAGE_CODE %}
+                                <!-- Current language: {{ LANGUAGE_CODE }} -->
+                                {% blocktranslate with time_created=post.time_created|date:'H:i, d E Y' %}
+                                    {{ time_created }}
+                                {% endblocktranslate %}
+                            {% endlanguage %}
+                        </p>
+                    </div>
+                    {% if post.rating == 0 %}
+                        <p>&#9734;&#9734;&#9734;&#9734;&#9734;  -  {{ post.headline }}</p>
+                    {% elif post.rating == 1 %}
+                        <p>&#9733;&#9734;&#9734;&#9734;&#9734;  -  {{ post.headline }}</p>
+                    {% elif post.rating == 2 %}
+                        <p>&#9733;&#9733;&#9734;&#9734;&#9734;  -  {{ post.headline }}</p>
+                    {% elif post.rating == 3 %}
+                        <p>&#9733;&#9733;&#9733;&#9734;&#9734;  -  {{ post.headline }}</p>
+                    {% elif post.rating == 4 %}
+                        <p>&#9733;&#9733;&#9733;&#9733;&#9734;  -  {{ post.headline }}</p>
+                    {% elif post.rating == 5 %}
+                        <p>&#9733;&#9733;&#9733;&#9733;&#9733;  -  {{ post.headline }}</p>
+                    {% endif %}
+                    <p>{{ post.body }}</p>
+                    {% if post.ticket %}
+                        <div class="ticket">
+                            <div class="user-date">
+                                {% if post.ticket.user.username == user.get_username %}
+                                    <p> Vous avez publié un ticket</p>
+                                {% else %}
+                                    <p>{{ post.ticket.user }} a publié un ticket</p>
+                                {% endif %}
+                                <p>
+                                    {% load i18n %}
+                                    {% language 'fr' %}
+                                        {% get_current_language as LANGUAGE_CODE %}
+                                        <!-- Current language: {{ LANGUAGE_CODE }} -->
+                                        {% blocktranslate with time_created=post.ticket.time_created|date:'H:i, d E Y' %}
+                                            {{ time_created }}
+                                        {% endblocktranslate %}
+                                    {% endlanguage %}
+                                </p>
+                            </div>
+                            <p>{{ post.ticket.title }}</p>
+                            <p>{{ post.ticket.description }}</p>
+                            {% if post.ticket.image %}
+                                <img src={{post.ticket.image.url}}>
+                            {% endif %}
+                            {% if not post.ticket in reviewed %}
+                                <p>
+                                    <button type="button" >
+                                        <a href="{% url 'review_to' ticket_id=post.ticket.id %}">Créer une critique</a>
+                                    </button>
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
             {% else %}
-                <p>{{ post.user }} a publié une critique  {{ post.time_created }}</p>
-            {% endif %}
-            <p>{{ post.rating }}  -  {{ post.headline }}</p>
-            <p>{{ post.body }}</p>
-            {% if post.ticket %}
-                <div>
-                    {% if post.ticket.user.username == user.get_username %}
-                        <p> Vous avez publié un ticket  {{ post.ticket.time_created }}</p>
-                    {% else %}
-                        <p>{{ post.ticket.user }} a publié un ticket  {{ post.ticket.time_created }}</p>
+                <div class="ticket">
+                    <div class="user-date">
+                        {% if post.user.username == user.get_username %}
+                            <p> Vous avez publié un ticket</p>
+                        {% else %}
+                            <p>{{ post.user }}  a demandé un ticket</p>
+                        {% endif %}
+                        <p>
+                            {% load i18n %}
+                            {% language 'fr' %}
+                                {% get_current_language as LANGUAGE_CODE %}
+                                <!-- Current language: {{ LANGUAGE_CODE }} -->
+                                {% blocktranslate with time_created=post.time_created|date:'H:i, d E Y' %}
+                                    {{ time_created }}
+                                {% endblocktranslate %}
+                            {% endlanguage %}
+                        </p>
+                    </div>
+                    <p>{{ post.title }}</p>
+                    <p>{{ post.description }}</p>
+                    {% if post.image %}
+                        <img src={{post.image.url}}>
                     {% endif %}
-                    <p>{{ post.ticket.title }}</p>
-                    <p>{{ post.ticket.description }}</p>
-                    {% if post.ticket.image %}
-                        <img src={{post.ticket.image.url}}>
-                    {% endif %}
-                    {% if not post.ticket in reviewed %}
+                    {% if not post in reviewed %}
                         <p>
                             <button type="button" >
-                                <a href="{% url 'review_to' ticket_id=post.ticket.id %}">Créer une critique</a>
+                                <a href="{% url 'review_to' ticket_id=post.id %}">Créer une critique</a>
                             </button>
                         </p>
                     {% endif %}
                 </div>
             {% endif %}
-        {% else %}
-            {% if post.user.username == user.get_username %}
-                <p> Vous avez publié un ticket  {{ post.time_created }}</p>
-            {% else %}
-                <p>{{ post.user }}  a demandé un ticket  {{ post.time_created }}</p>
-            {% endif %}
-            <p>{{ post.title }}</p>
-            <p>{{ post.description }}</p>
-            {% if post.image %}
-                <img src={{post.image.url}}>
-            {% endif %}
-            {% if not post in reviewed %}
-                <p>
-                    <button type="button" >
-                        <a href="{% url 'review_to' ticket_id=post.id %}">Créer une critique</a>
-                    </button>
-                </p>
-            {% endif %}
-        {% endif %}
-        </div>
-    {% endfor %}
+        {% endfor %}
 
 
+    </div>
 {% endblock content %}

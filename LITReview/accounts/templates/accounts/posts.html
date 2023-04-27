@@ -1,33 +1,64 @@
 {% extends 'accounts/index.html' %}
 {% block content %}
-    <h2>Vos Posts</h2>
+    <div id="flux-page-container">
+        <h2>Vos Posts</h2>
         {{ posts.as_p }}
         {% csrf_token %}
         {% for post in posts %}
-            <div>
-                {% if post.type == "review" %}
-                    <p>Vous avez publié une critique        {{ post.time_created }}</p>
-                    <p>{{ post.rating }}  -  {{ post.headline }}</p>
-                    <p>{{ post.body }}</p>
-                    {% if post.ticket %}
-                        {% if post.ticket.user == user.get_username %}
-                            <p> Vous avez publié un ticket  {{ post.ticket.time_created }}</p>
-                        {% else %}
-                            <p>{{ post.ticket.user }} a publié un ticket  {{ post.ticket.time_created }}</p>
-                        {% endif %}
-                        <p>{{ post.ticket.title }}</p>
-                        <p>{{ post.ticket.description }}</p>
-                        {% if post.ticket.image %}
-                            <img src={{post.ticket.image.url}}>
-                        {% endif %}
-                    {% endif %}
-                {% else %}
-                    <p>Vous avez publié un ticket  {{ post.time_created }}</p>
-                    <p>{{ post.title }}</p>
-                    <p>{{ post.description }}</p>
-                    {% if post.image %}
-                        <img src={{post.image.url}}>
-                    {% endif %}
+            {% if post.type == "review" %}
+            <div class="review">
+                <div class="user-date">
+                    <p>Vous avez publié une critique</p>
+                        <p>
+                            {% load i18n %}
+                            {% language 'fr' %}
+                                {% get_current_language as LANGUAGE_CODE %}
+                                <!-- Current language: {{ LANGUAGE_CODE }} -->
+                                {% blocktranslate with time_created=post.time_created|date:'H:i, d E Y' %}
+                                    {{ time_created }}
+                                {% endblocktranslate %}
+                            {% endlanguage %}
+                        </p>
+                </div>
+                {% if post.rating == 0 %}
+                    <p>&#9734;&#9734;&#9734;&#9734;&#9734;  -  {{ post.headline }}</p>
+                {% elif post.rating == 1 %}
+                    <p>&#9733;&#9734;&#9734;&#9734;&#9734;  -  {{ post.headline }}</p>
+                {% elif post.rating == 2 %}
+                    <p>&#9733;&#9733;&#9734;&#9734;&#9734;  -  {{ post.headline }}</p>
+                {% elif post.rating == 3 %}
+                    <p>&#9733;&#9733;&#9733;&#9734;&#9734;  -  {{ post.headline }}</p>
+                {% elif post.rating == 4 %}
+                    <p>&#9733;&#9733;&#9733;&#9733;&#9734;  -  {{ post.headline }}</p>
+                {% elif post.rating == 5 %}
+                    <p>&#9733;&#9733;&#9733;&#9733;&#9733;  -  {{ post.headline }}</p>
+                {% endif %}
+                <p>{{ post.body }}</p>
+                {% if post.ticket %}
+                    <div class="ticket">
+                        <div class="user-date">
+                            {% if post.ticket.user == user.get_username %}
+                                <p> Vous avez publié un ticket</p>
+                            {% else %}
+                                <p>{{ post.ticket.user }} a publié un ticket</p>
+                            {% endif %}
+                            <p>
+                                {% load i18n %}
+                                {% language 'fr' %}
+                                    {% get_current_language as LANGUAGE_CODE %}
+                                    <!-- Current language: {{ LANGUAGE_CODE }} -->
+                                    {% blocktranslate with time_created=post.ticket.time_created|date:'H:i, d E Y' %}
+                                        {{ time_created }}
+                                    {% endblocktranslate %}
+                                {% endlanguage %}
+                            </p>
+                        </div>
+                            <p>{{ post.ticket.title }}</p>
+                            <p>{{ post.ticket.description }}</p>
+                            {% if post.ticket.image %}
+                                <img src={{post.ticket.image.url}}>
+                            {% endif %}
+                    </div>
                 {% endif %}
                 <p>
                     <button type="button" >
@@ -38,7 +69,37 @@
                     </button>
                 </p>
             </div>
+                {% else %}
+                    <div class="ticket">
+                        <div class="user-date">
+                            <p>Vous avez publié un ticket</p>
+                            <p>
+                                {% load i18n %}
+                                {% language 'fr' %}
+                                    {% get_current_language as LANGUAGE_CODE %}
+                                    <!-- Current language: {{ LANGUAGE_CODE }} -->
+                                    {% blocktranslate with time_created=post.time_created|date:'H:i, d E Y' %}
+                                        {{ time_created }}
+                                    {% endblocktranslate %}
+                                {% endlanguage %}
+                            </p>
+                        </div>
+                        <p>{{ post.title }}</p>
+                        <p>{{ post.description }}</p>
+                        {% if post.image %}
+                            <img src={{post.image.url}}>
+                        {% endif %}
+                <p>
+                    <button type="button" >
+                        <a href="{% url 'post_edit' post_type=post.type post_id=post.id %}">Modifier</a>
+                    </button>
+                    <button type="button" >
+                        <a href="{% url 'post_delete' post_type=post.type post_id=post.id %}">Supprimer</a>
+                    </button>
+                </p>
+                    </div>
+                {% endif %}
         {% endfor %}
 
-
+    </div>
 {% endblock content %}

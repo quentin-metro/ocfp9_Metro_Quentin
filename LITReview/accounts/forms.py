@@ -1,7 +1,7 @@
 from .models import UserFollows, Ticket, Review
 from django import forms
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 
 class SignupForm(forms.Form):
@@ -48,14 +48,19 @@ class FollowForm(forms.Form):
             raise ValidationError("Nom d\'utilisateur n'existe pas")
         return followname
 
-    def exist_already(self, user):
+    def check_valid(self, user):
+        """ Check if the form.followname isn't the user itself and if the user already follow the form.followname"""
         followname = self.cleaned_data.get('followname')
         to_follow = User.objects.get(username=followname)
-        exist = UserFollows.objects.get(user=user, followed_user=to_follow)
-        if exist:
+        if user == to_follow:
+            self.add_error("followname", "On ne se suit pas soi-même")
+            return False
+        try:
+            UserFollows.objects.get(user=user, followed_user=to_follow)
             self.add_error("followname", f"Vous suivez déjà {followname}")
+            return False
+        except ObjectDoesNotExist:
             return True
-        return False
 
     def save(self, user):
         followname = self.cleaned_data.get('followname')
@@ -173,6 +178,7 @@ class ReviewTicketForm(ReviewForm):
     ticket_title = forms.CharField(label='Titre', min_length=1, max_length=128)
     ticket_description = forms.CharField(label='Description', widget=forms.Textarea, required=False)
     ticket_image = forms.ImageField(label='Image', required=False)
+    field_order = ['ticket_title', 'ticket_description', 'ticket_image', 'headline', 'rating', 'body']
     # Review Fields
     '''
         headline = forms.CharField(label='En-Tête', min_length=1, max_length=128)

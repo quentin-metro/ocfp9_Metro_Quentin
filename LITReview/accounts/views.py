@@ -104,14 +104,20 @@ def flux(request):
         list_follows.append(follow.followed_user.id)
     follow_tickets = Ticket.objects.filter(user__in=list_follows)
     follow_reviews = Review.objects.filter(user__in=list_follows)
+
     # Get user posts
     my_tickets = Ticket.objects.filter(user=request.user)
     my_reviews = Review.objects.filter(user=request.user)
     reviewed = []
     for review in my_reviews:
         reviewed.append(review.ticket)
+
+    # Get review to your ticket from non-followed
+    reviews_to_my_tickets = Review.objects.filter(ticket__in=my_tickets)
+    non_follow_reviews = reviews_to_my_tickets.exclude(user__in=list_follows).exclude(user=request.user)
+
     # sort and organize
-    my_flux = sorted(chain(my_tickets, my_reviews, follow_tickets, follow_reviews),
+    my_flux = sorted(chain(my_tickets, my_reviews, follow_tickets, follow_reviews, non_follow_reviews),
                      key=lambda x: x.time_created, reverse=True)
     for post in my_flux:
         if hasattr(post, 'ticket'):
@@ -125,6 +131,7 @@ def flux(request):
 def posts(request):
     tickets = Ticket.objects.filter(user=request.user)
     reviews = Review.objects.filter(user=request.user)
+    # sort and organize
     user_posts = sorted(chain(tickets, reviews), key=lambda x: x.time_created, reverse=True)
     for post in user_posts:
         if hasattr(post, 'ticket'):
@@ -157,12 +164,13 @@ def follows(request):
     user = User.objects.get(username=request.user.username)
     followed = UserFollows.objects.filter(user=user)
     follower = UserFollows.objects.filter(followed_user=user)
+
     # Handling form
     form = forms.FollowForm()
     if request.method == 'POST':
         form = forms.FollowForm(request.POST)
         if form.is_valid():
-            form.exist_already(user)
+            form.check_valid(user)
             form.save(user)
     context = {'form': form,
                'followed': followed,
@@ -175,4 +183,4 @@ def follows(request):
 def unfollow(request, follow_id):
     user_follow = UserFollows.objects.get(id=follow_id)
     user_follow.delete()
-    return follows(request)
+    return redirect('follows')
