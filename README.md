@@ -28,3 +28,9 @@ Application Web de Ticket/critique sur des livres, avec fonctionnalité de Flux 
   - la liste des utilisateurs ainsi qu'un bouton permettant de cesser de le suivre.
   - la liste des utilisateurs qui nous suivent.
 - La barre de menu contient un bouton `Se déconnecter` afin de se déconnecter et d'être redirigé vers la page de connexion.
+
+## Certificat Flake8
+- 'Flake8' vous permet de verifier que le logiciel correspond au PEP8
+- pour avoir une certification flake8 par vous-mêmes
+- lancer la commande `flake8 --format=html --htmldir=flake8_rapport`
+- celle-ci fera apparaitre un dossier 'flake8_rapport' contenant le résultat de la commande dont les erreurs si elles existent
